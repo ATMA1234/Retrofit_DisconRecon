@@ -2,49 +2,53 @@ package com.androiddeft.jsonretrofit.Models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.j256.ormlite.field.DatabaseField;
 
-public class Discon_data {
+import java.io.Serializable;
 
+public class Discon_data implements Serializable {
+
+    @DatabaseField(columnName = "ACCT_ID")
     @SerializedName("ACCT_ID")
     @Expose
     private String ACCOUNT_ID;
-
+    @DatabaseField(columnName = "ARREARS")
     @SerializedName("ARREARS")
     @Expose
     private String ARREARS;
-
+    @DatabaseField(columnName = "DIS_DATE")
     @SerializedName("DIS_DATE")
     @Expose
     private String DIS_DATE;
-
+    @DatabaseField(columnName = "PREVREAD")
     @SerializedName("PREVREAD")
     @Expose
     private String PREVREAD;
-
+    @DatabaseField(columnName = "CONSUMER_NAME")
     @SerializedName("CONSUMER_NAME")
     @Expose
     private String CONSUMER_NAME;
-
+    @DatabaseField(columnName = "ADD1")
     @SerializedName("ADD1")
     @Expose
     private String ADDRESS;
-
+    @DatabaseField(columnName = "LAT")
     @SerializedName("LAT")
     @Expose
     private String LAT;
-
+    @DatabaseField(columnName = "LON")
     @SerializedName("LON")
     @Expose
     private String LON;
-
+    @DatabaseField(columnName = "MTR_READ")
     @SerializedName("MTR_READ")
     @Expose
     private String MTR_READ;
-
+    @DatabaseField(columnName = "COMMENTS")
     @SerializedName("COMMENTS")
     @Expose
     private String COMMENTS;
-
+    @DatabaseField(columnName = "REMARKS")
     @SerializedName("REMARKS")
     @Expose
     private String REMARKS;

@@ -11,14 +11,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
-import com.androiddeft.jsonretrofit.Adapters.DisconAdapter;
 import com.androiddeft.jsonretrofit.Adapters.ReconAdapter;
-import com.androiddeft.jsonretrofit.Models.Discon_data;
-import com.androiddeft.jsonretrofit.Models.DisconnectionList;
 import com.androiddeft.jsonretrofit.Models.Recon_data;
 import com.androiddeft.jsonretrofit.Models.ReconnectionList;
 import com.androiddeft.jsonretrofit.R;
-import com.androiddeft.jsonretrofit.api.ApiService;
+import com.androiddeft.jsonretrofit.api.RegisterAPI;
 import com.androiddeft.jsonretrofit.helper.RetroClient;
 
 import java.util.ArrayList;
@@ -28,8 +25,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.androiddeft.jsonretrofit.Values.Constants.LOGIN_FAILURE;
-import static com.androiddeft.jsonretrofit.Values.Constants.LOGIN_SUCCESS;
 import static com.androiddeft.jsonretrofit.Values.Constants.RECON_FAILURE;
 import static com.androiddeft.jsonretrofit.Values.Constants.RECON_SUCCESS;
 
@@ -38,6 +33,7 @@ public class ReconnectionActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ReconAdapter reconAdapter;
     private ProgressDialog progressDialog;
+
 
     private final Handler mhandler = new Handler(new Handler.Callback() {
         @Override
@@ -62,7 +58,6 @@ public class ReconnectionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reconnection);
 
-
         progressDialog = new ProgressDialog(ReconnectionActivity.this);
         progressDialog.setMessage("Loading Data.. Please wait...");
         progressDialog.setCancelable(false);
@@ -72,7 +67,7 @@ public class ReconnectionActivity extends AppCompatActivity {
 
     //get data
     public void ReconData(String MRCODE, String DATE) {
-        ApiService api = RetroClient.getApiService();
+        RegisterAPI api = RetroClient.getApiService();
         api.getReconData(MRCODE, DATE).enqueue(new Callback<ReconnectionList>() {
             @Override
             public void onResponse(@NonNull Call<ReconnectionList> call, @NonNull Response<ReconnectionList> response) {

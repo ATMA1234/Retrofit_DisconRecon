@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.androiddeft.jsonretrofit.Models.MRDATA;
 import com.androiddeft.jsonretrofit.Models.MRDetails;
-import com.androiddeft.jsonretrofit.api.ApiService;
+import com.androiddeft.jsonretrofit.api.RegisterAPI;
 import com.androiddeft.jsonretrofit.helper.RetroClient;
 
 import java.util.ArrayList;
@@ -27,6 +27,7 @@ import static com.androiddeft.jsonretrofit.Values.Constants.LOGIN_SUCCESS;
 public class LoginActivity extends AppCompatActivity {
     ArrayList<MRDATA> mrdata;
     private ProgressDialog progressDialog;
+
 
     private final Handler mhandler = new Handler(new Handler.Callback() {
         @Override
@@ -63,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
 
     //get MR data
     public void MRDETAILS(String MRCODE, String DEVICEID, String PASSWORD) {
-        ApiService api = RetroClient.getApiService();
+        RegisterAPI api = RetroClient.getApiService();
         api.getMRDetails(MRCODE, DEVICEID, PASSWORD).enqueue(new Callback<MRDetails>() {
             @Override
             public void onResponse(@NonNull Call<MRDetails> call, @NonNull Response<MRDetails> response) {

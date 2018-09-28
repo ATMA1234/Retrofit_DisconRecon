@@ -21,4 +21,10 @@
         android:layout_gravity="center"
         android:text="Recon" />
 
+    <Button
+        android:id="@+id/btn_discon_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Discon Update" />
 </LinearLayout>

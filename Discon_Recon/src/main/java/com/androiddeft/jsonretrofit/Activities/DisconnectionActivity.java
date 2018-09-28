@@ -12,12 +12,16 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.androiddeft.jsonretrofit.Adapters.DisconAdapter;
+import com.androiddeft.jsonretrofit.Database.DataHelper;
 import com.androiddeft.jsonretrofit.Models.Discon_data;
 import com.androiddeft.jsonretrofit.Models.DisconnectionList;
 import com.androiddeft.jsonretrofit.R;
-import com.androiddeft.jsonretrofit.api.ApiService;
+import com.androiddeft.jsonretrofit.api.RegisterAPI;
 import com.androiddeft.jsonretrofit.helper.RetroClient;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -29,12 +33,13 @@ import retrofit2.Response;
 import static com.androiddeft.jsonretrofit.Values.Constants.DISCON_LIST_FAILURE;
 import static com.androiddeft.jsonretrofit.Values.Constants.DISCON_LIST_SUCCESS;
 
-
 public class DisconnectionActivity extends AppCompatActivity {
     private ArrayList<Discon_data> disconData;
     private RecyclerView recyclerView;
     private DisconAdapter disconAdapter;
     private ProgressDialog progressDialog;
+    DataHelper databaseHelper;
+    private Dao<Discon_data, Integer> disconDao;
 
     private final Handler mhandler = new Handler(new Handler.Callback() {
         @Override
@@ -42,6 +47,7 @@ public class DisconnectionActivity extends AppCompatActivity {
             switch (msg.what) {
                 case DISCON_LIST_SUCCESS:
                     progressDialog.dismiss();
+                    insert_discon_data();
                     Toast.makeText(DisconnectionActivity.this, "Success!!", Toast.LENGTH_SHORT).show();
                     break;
                 case DISCON_LIST_FAILURE:
@@ -60,6 +66,13 @@ public class DisconnectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_disconnection);
         ButterKnife.bind(this);
 
+        databaseHelper = new DataHelper(this);
+        databaseHelper.openDatabase();
+//        try {
+//            disconDao=databaseHelper.getDisconDao();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
         progressDialog = new ProgressDialog(DisconnectionActivity.this);
         progressDialog.setMessage("Loading Data.. Please wait...");
         progressDialog.setCancelable(false);
@@ -69,7 +82,7 @@ public class DisconnectionActivity extends AppCompatActivity {
 
     //Request or post data
     public void DisconData(String MRCODE, String DATE) {
-        ApiService api = RetroClient.getApiService();
+        RegisterAPI api = RetroClient.getApiService();
         api.getDisconData(MRCODE, DATE).enqueue(new Callback<DisconnectionList>() {
             @Override
             public void onResponse(@NonNull Call<DisconnectionList> call, @NonNull Response<DisconnectionList> response) {
@@ -94,4 +107,32 @@ public class DisconnectionActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (databaseHelper != null) {
+            OpenHelperManager.releaseHelper();
+            databaseHelper = null;
+        }
+    }
+
+    // This is how, DatabaseHelper can be initialized for future use
+    private DataHelper getHelper() {
+        if (databaseHelper == null) {
+            databaseHelper = OpenHelperManager.getHelper(this, DataHelper.class);
+        }
+        return databaseHelper;
+    }
+
+    public void insert_discon_data() {
+        Discon_data discon_data = new Discon_data();
+        try {
+            final Dao<Discon_data, Integer> disconDao = getHelper().getDisconDao();
+            disconDao.create(discon_data);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
+
+

@@ -1,12 +1,12 @@
 package com.androiddeft.jsonretrofit.helper;
 
-import com.androiddeft.jsonretrofit.api.ApiService;
+import com.androiddeft.jsonretrofit.api.RegisterAPI;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetroClient {
-        private static String BASE_URL = "http://test_bc_service.hescomtrm.com/Retrofit_Discon_Recon.asmx/";
+    private static final String BASE_URL = "http://test_bc_service.hescomtrm.com/Retrofit_Discon_Recon.asmx/";
 
     private static Retrofit getRetrofitInstance() {
         return new Retrofit.Builder()
@@ -15,7 +15,7 @@ public class RetroClient {
                 .build();
     }
 
-    public static ApiService getApiService() {
-        return getRetrofitInstance().create(ApiService.class);
+    public static RegisterAPI getApiService() {
+        return getRetrofitInstance().create(RegisterAPI.class);
     }
 }
