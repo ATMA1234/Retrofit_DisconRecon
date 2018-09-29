@@ -12,12 +12,17 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.androiddeft.jsonretrofit.Adapters.ReconAdapter;
+import com.androiddeft.jsonretrofit.Database.DatabaseHelper;
+import com.androiddeft.jsonretrofit.Models.Discon_data;
 import com.androiddeft.jsonretrofit.Models.Recon_data;
 import com.androiddeft.jsonretrofit.Models.ReconnectionList;
 import com.androiddeft.jsonretrofit.R;
 import com.androiddeft.jsonretrofit.api.RegisterAPI;
 import com.androiddeft.jsonretrofit.helper.RetroClient;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -33,6 +38,7 @@ public class ReconnectionActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ReconAdapter reconAdapter;
     private ProgressDialog progressDialog;
+    DatabaseHelper databaseHelper;
 
 
     private final Handler mhandler = new Handler(new Handler.Callback() {
@@ -41,6 +47,7 @@ public class ReconnectionActivity extends AppCompatActivity {
             switch (msg.what) {
                 case RECON_SUCCESS:
                     progressDialog.dismiss();
+                    insert_recon_data();
                     Toast.makeText(ReconnectionActivity.this, "Success!!", Toast.LENGTH_SHORT).show();
                     break;
                 case RECON_FAILURE:
@@ -57,7 +64,8 @@ public class ReconnectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reconnection);
-
+        databaseHelper = new DatabaseHelper(this);
+        databaseHelper.openDatabase();
         progressDialog = new ProgressDialog(ReconnectionActivity.this);
         progressDialog.setMessage("Loading Data.. Please wait...");
         progressDialog.setCancelable(false);
@@ -91,5 +99,33 @@ public class ReconnectionActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    //**********************************************************************************************************
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (databaseHelper != null) {
+            OpenHelperManager.releaseHelper();
+            databaseHelper = null;
+        }
+    }
+
+    // This is how, DatabaseHelper can be initialized for future use ***********************************************
+    private DatabaseHelper getHelper() {
+        if (databaseHelper == null) {
+            databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
+        }
+        return databaseHelper;
+    }
+
+    public void insert_recon_data() {
+        Recon_data recon_data = new Recon_data();
+        try {
+            final Dao<Recon_data, Integer> reconDao = getHelper().getReconDao();
+            reconDao.create(recon_data);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
